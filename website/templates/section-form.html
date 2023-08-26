@@ -1,0 +1,53 @@
+{% extends "base.html" %} {% block title %}Report{% endblock %}
+{% block content %}
+
+<div>
+  <h1 align="center">Section Form</h1>
+
+  <p>Report ID: {{ report_id }}</p>
+
+  <p>Previous Section: {{ section_name }}</p>
+
+  <form action="/section" method="POST" onSubmit="oneClickProtection()">
+
+    <div align="center">
+      <label for="section">Please select the test section</label>
+      <select name="section" id="section">
+        {% for row in sections %}
+          <option value="{{ loop.index0 }}">{{ row[12] }}</option>
+        {% endfor %}
+      </select>
+
+
+      <button type="submit" id="submit-button" name="submit-button" class="btn btn-primary">Select Test Section</button>
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript">
+
+console.log('ATTEMPTING TO SELECT OPTION, AUTOMATICALLY...');
+
+section_name = '{{ section_name }}';
+
+  console.log('SECTION NAME: ', section_name);
+  if (section_name != '') {
+
+    var section_element = document.getElementById('section');
+    console.log('SECTION ELEMENT: ', section_element);
+    var options = section_element.options;
+
+    var unselected = true;
+    for(let idx = 0; idx<options.length; idx++) {
+      console.log(options[idx].value)
+      if(unselected == true && options[idx].innerHTML.toLowerCase().includes(section_name.toLowerCase())) {
+        options[idx].selected = true;
+        unselected = false;
+        console.log('selected section automatically for you!!');
+      }
+    }
+  }
+
+</script>
+
+{% endblock %}

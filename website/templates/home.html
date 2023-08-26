@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %}
+{% block content %}
+
+<div>
+  <h1 align="center">Auto-Report Generator</h1>
+
+  <p>Please enter an SO number</p>
+
+  <form action="/" method="POST" onSubmit="oneClickProtection()">
+    <input name="so_num" id="so_num" class="form-control"></input>
+    <br />
+    <div align="center">
+      <button type="submit" id="submit-button" name="submit-button" class="btn btn-primary">Start Report</button>
+    </div>
+  </form>
+</div>
+
+<div>
+
+{% endblock %}

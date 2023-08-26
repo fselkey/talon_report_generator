@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block title %}Report{% endblock %}
+{% block content %}
+
+<div>
+  <h1 align="center">Test Line Form</h1>
+
+  <p>Report ID: {{ report_id }}</p>
+
+  <form action="/test" method="POST" onSubmit="oneClickProtection()">
+
+    <div align="center">
+      <label for="test_name">Select the test name</label>
+      <select name="test_name" id="test_name" onchange='autoSelectTemplate(test_name.value, "{{ template_titles }}")'>
+        {% for row in test_rows %}
+          <option value="{{ row[12] }}">{{ row[12] }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="test_template">Select the test template</label>
+      <select name="test_template" id="test_template">
+        {% for test_template in test_templates %}
+          <option value="{{ test_template.tag }}">{{ test_template.name }}</option>
+        {% endfor %}
+      </select>
+
+      <script type="text/javascript">
+        window.addEventListener("load",function(){
+            let row = document.getElementById("test_name").value;
+            autoSelectTemplate(row.toString(), '{{ template_titles }}')
+        },false);
+      </script>
+
+      <button type="submit" id="submit-button" name="submit-button" class="btn btn-primary">Select Test</button>
+
+    </div>
+  </form>
+</div>
+
+<div>
+
+{% endblock %}

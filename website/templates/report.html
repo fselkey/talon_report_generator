@@ -1,0 +1,153 @@
+{% extends "base.html" %} {% block title %}Report{% endblock %}
+{% block content %}
+
+<div align="center" class="row">
+  <div class="col-sm">
+
+
+    <h1 align="center">Verify Report Details</h1>
+    <p>SO #: {{ so_num }}</p>
+    <p>Report ID: {{ report_id }}</p>
+  </div>
+</div>
+
+<div align="center" class="row">
+  <form action="/report" method="POST" onSubmit="oneClickProtection()">
+    <div align="center" class="row">
+      <div class="col-sm">
+
+        <p>Total Qty: 
+          <input id="iqty" name="iqty" type="number" value="{{ iqty }}">
+        </p>
+        <p>Pass Qty: 
+          <input id="pqty" name="pqty" type="number" value="{{ pqty }}">
+        </p>
+        <p>Fail Qty: 
+          <input id="fqty" name="fqty" type="number" value="{{ fqty }}">
+        </p>
+
+        <p>Asset tags: i.e 161,116, 156 ,123
+          <input id="asset_tags" name="asset_tags" type="text" value="{{ equipment_template }}">
+        </p>
+
+        <p>
+          <textarea id="summary_textarea" name="summary_textarea" rows="4" cols="50">{{ quick_msg }}</textarea>
+        </p>
+
+
+
+      </div>
+      <div class="col-sm">
+        {% for quick_message in quick_msgs %}
+          <button type="button" id="msg{{loop.index0}}" name="msg{{loop.index0}}" value="{{ quick_message }}" onclick='swap_summary("{{ loop.index0 }}")'>{{ quick_message }}</button>
+
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <hr>
+
+    <div align="center" class="row">
+
+      <p>Select # of Columns to Conform All Images</p>
+    </div>
+    <div align="center" class="row">
+      <p>Section: {{ summary_sect_id }} | {{ section_name }}</p>
+    </div>
+    <div align="center" class="row">
+
+      <label for="all_columns"># of Columns:  </label>
+      <select id="all_columns" name="all_columns" onchange='setAllColumns("{{ img_files }}", "{{ summary_sect_id }}", all_columns.value)'>
+        <option value="1">Single Column</option>
+        <option value="2">2 Columns</option>
+        <option value="3">3 Columns</option>
+        <option value="4">4 Columns</option>
+      </select>
+    </div>
+
+    <hr>
+
+    {% for file in img_files %}
+    {% set outer_loop = loop %}
+
+      <div align="center" class="row">
+
+
+
+          <div class="col-sm">
+            <img src="{{ img_urls[loop.index0] }}" alt="{{ img_titles[loop.index0] }}" width="600" height="400">
+          </div>
+
+          <div class="col-sm">
+            <h4>File Name: {{ file }}</h4>
+            <h6>Image ID: {{ img_ids[loop.index0] }}</h6>
+  
+            <label for="img_title{{loop.index0}}">Title</label>
+            <input id="img_title{{loop.index0}}" name="img_title{{loop.index0}}" type="text" value="{{ img_titles[loop.index0] }}">
+  
+            <label for="img_sectid{{loop.index0}}">Section</label>
+            <select id="img_sectid{{loop.index0}}" name="img_sectid{{loop.index0}}" value="{{ img_sectids[loop.index0] }}">
+              <option value="0">
+                0 | Not Used
+              </option>
+              {% for report_section in report_sections %}
+                <option value="{{ report_section[2] }}">
+                  {{ report_section[2] }} | {{ report_section[12] }}
+                </option>
+              {% endfor %}
+            </select>
+  
+            <label for="img_col{{loop.index0}}">Columns</label>
+            <select id="img_col{{loop.index0}}" name="img_col{{loop.index0}}" value="parseInt({{ img_cols[loop.index0]|safe }}) - 1)">
+              <option value="1">Single Column</option>
+              <option value="2">2 Columns</option>
+              <option value="3">3 Columns</option>
+              <option value="4">4 Columns</option>
+            </select>
+  
+  
+            <label for="img_dord{{loop.index0}}">Order</label>
+            <input id="img_dord{{loop.index0}}" name="img_dord{{loop.index0}}" type="text" value="{{ img_dords[loop.index0] }}" default="1">
+            
+            <textarea rows="7" cols="49" id="img_description_{{loop.index0}}" name="img_description_{{loop.index0}}" type="text">{{ img_descriptions[loop.index0] }}</textarea>
+
+            <button type="button" onclick='deselectImage("img_sectid{{loop.index0}}","img_col{{loop.index0}}", "img_dord{{loop.index0}}", "img_description_{{loop.index0}}")'>Deselect Image</button>
+  
+          </div>
+
+
+          <div class="col-sm">
+            {% for image_template in image_templates %}
+              <button type="button" id="img_template_{{loop.index0}}" name="img_template_{{loop.index0}}" value="{{ image_template.description }}" onclick='swap_img_template("{{ outer_loop.index0 }}","{{ loop.index0 }}","{{ summary_sect_id }}","{{ image_template.col }}","{{ image_template.dord }}")'>{{ image_template.description }}</button>
+    
+            {% endfor %}
+          </div>
+
+
+          <script type="text/javascript">
+
+            numColumn = parseInt('{{ img_cols[loop.index0]|safe }}') - 1;
+            numSection = parseInt('{{img_sectids[loop.index0]|safe}}') -1 ;
+
+            if (numSection >= 0) {
+              var section_element = document.getElementById('img_sectid{{loop.index0}}');
+              section_element.options[numSection].selected = true;
+            }
+            if (numColumn >= 0) {
+              var column_element = document.getElementById('img_col{{loop.index0}}');
+              column_element.options[numColumn].selected = true;
+            }
+  
+
+          </script>
+        </div>
+
+      {% endfor %}
+
+      <button type="submit" id="submit-button" name="submit-button" class="btn btn-primary">Submit Report</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
